@@ -18,11 +18,11 @@ DROP TABLE IF EXISTS `Event_Equipment`;
 		
 CREATE TABLE `Event_Equipment` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT,
-  `StartBlock48` INTEGER(2) NOT NULL DEFAULT NULL,
-  `EndBlock48` INTEGER(2) NULL DEFAULT NULL,
+  `StartBlock48` INTEGER(2) NOT NULL,
+  `EndBlock48` INTEGER(2) NULL,
   `EquipmentID` INTEGER NOT NULL,
-  `UserID` INTEGER NOT NULL DEFAULT NULL,
-  `EventID` INTEGER NOT NULL DEFAULT NULL,
+  `UserID` INTEGER NOT NULL,
+  `EventID` INTEGER NOT NULL,
   PRIMARY KEY (`ReservationID`),
 KEY (`EquipmentID`, `StartBlock48`, `EndBlock48`)
 );
@@ -35,9 +35,9 @@ KEY (`EquipmentID`, `StartBlock48`, `EndBlock48`)
 DROP TABLE IF EXISTS `User`;
 		
 CREATE TABLE `User` (
-  `UserID` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
+  `UserID` INTEGER NOT NULL AUTO_INCREMENT,
   `UserName` VARCHAR(50) NOT NULL,
-  `Name` VARCHAR NOT NULL DEFAULT '200',
+  `Name` VARCHAR(100) NOT NULL,
   `Email` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`UserID`)
 );
@@ -67,7 +67,7 @@ CREATE TABLE `Event` (
   `EventID` INTEGER NOT NULL AUTO_INCREMENT,
   `EventName` VARCHAR(100) NOT NULL DEFAULT 'NULL',
   `Description` MEDIUMTEXT NULL DEFAULT NULL,
-  `StartDT` DATE NOT NULL DEFAULT 'NULL',
+  `StartDT` DATE NOT NULL,
   `EndDT` DATE NULL DEFAULT NULL,
   `OwnerUserID` INTEGER NOT NULL,
   PRIMARY KEY (`EventID`)
@@ -82,7 +82,7 @@ DROP TABLE IF EXISTS `Roles`;
 		
 CREATE TABLE `Roles` (
   `RoleID` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
-  `RoleLevel` ENUM(Read,Write,Admin) NOT NULL,
+  `RoleLevel` ENUM('Read','Write','Admin') NOT NULL,
   `AreaID` INTEGER NOT NULL,
   `RoleName` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`RoleID`)
@@ -114,9 +114,9 @@ DROP TABLE IF EXISTS `Event_Staff`;
 CREATE TABLE `Event_Staff` (
   `StartBlock48` INTEGER(2) NOT NULL,
   `EndBlock48` INTEGER(2) NOT NULL,
-  `UserID` INTEGER NOT NULL DEFAULT NULL,
-  `EventID_Event` INTEGER NOT NULL,
-  PRIMARY KEY (`UserID`, `StartBlock48`, `EndBlock48`, `EventID_Event`)
+  `UserID` INTEGER NOT NULL,
+  `EventID` INTEGER NOT NULL,
+  PRIMARY KEY (`UserID`, `StartBlock48`, `EndBlock48`, `EventID`)
 );
 
 -- ---
@@ -141,8 +141,8 @@ DROP TABLE IF EXISTS `Equipment`;
 		
 CREATE TABLE `Equipment` (
   `EquipmentID` INTEGER NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR NOT NULL,
-  `Condition` ENUM(NEW,GOOD,NEEDS REPAIR) NULL DEFAULT NULL,
+  `Name` VARCHAR(100) NOT NULL,
+  `Condition` ENUM('NEW','GOOD','NEEDS REPAIR') NULL DEFAULT NULL,
   `AcquiredDT` DATE NULL DEFAULT NULL,
   `AreaID` INTEGER NOT NULL,
   PRIMARY KEY (`EquipmentID`)
@@ -156,9 +156,9 @@ CREATE TABLE `Equipment` (
 DROP TABLE IF EXISTS `User_Contact`;
 		
 CREATE TABLE `User_Contact` (
-  `Type` ENUM(Phone,Email,Address) NOT NULL,
+  `Type` ENUM('Phone','Email','Address') NOT NULL,
   `Value` VARCHAR(200) NOT NULL,
-  `UserID` INTEGER NOT NULL DEFAULT NULL,
+  `UserID` INTEGER NOT NULL,
   PRIMARY KEY (`Type`, `UserID`)
 );
 
@@ -170,13 +170,13 @@ CREATE TABLE `User_Contact` (
 DROP TABLE IF EXISTS `Room`;
 		
 CREATE TABLE `Room` (
-  `RoomID` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `RoomID` INTEGER NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(100) NOT NULL,
   `Capacity` INTEGER NULL DEFAULT NULL,
   `Accessible` bit(1) NOT NULL DEFAULT FALSE,
   `Building` VARCHAR(100) NULL DEFAULT NULL,
-  `Audio` ENUM(Provided,Ready,Unsupported) NOT NULL,
-  `Video` ENUM(Provided,Ready,Unsupported) NOT NULL DEFAULT FALSE,
+  `Audio` ENUM('Provided','Ready','Unsupported') NOT NULL,
+  `Video` ENUM('Provided','Ready','Unsupported') NOT NULL,
   `AreaID` INTEGER NOT NULL,
   PRIMARY KEY (`RoomID`)
 );
@@ -190,7 +190,7 @@ DROP TABLE IF EXISTS `Event_Room`;
 		
 CREATE TABLE `Event_Room` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
-  `RoomID` INTEGER NOT NULL DEFAULT NULL,
+  `RoomID` INTEGER NOT NULL,
   `StartBlock48` INTEGER(2) NOT NULL,
   `EndBlock48` INTEGER(2) NOT NULL,
   `EventID` INTEGER NOT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE `Room_Approvals` (
   `Room_ReservationID` INTEGER NOT NULL,
   `Room_ApprovalID` INTEGER NULL DEFAULT NULL,
   `Approved` bit(1) NOT NULL DEFAULT false,
-  `ApproverUserID` INTEGER NOT NULL DEFAULT NULL,
+  `ApproverUserID` INTEGER NOT NULL,
   `ApprovedDT` DATE NULL DEFAULT NULL,
   PRIMARY KEY (`Room_ApprovalID`)
 );
@@ -227,7 +227,7 @@ ALTER TABLE `Roles` ADD FOREIGN KEY (AreaID) REFERENCES `ServiceArea` (`AreaID`)
 ALTER TABLE `Equipment_Approvals` ADD FOREIGN KEY (ApproverUserID) REFERENCES `User` (`UserID`);
 ALTER TABLE `Equipment_Approvals` ADD FOREIGN KEY (Room_ReservationID) REFERENCES `Event_Equipment` (`ReservationID`);
 ALTER TABLE `Event_Staff` ADD FOREIGN KEY (UserID) REFERENCES `User` (`UserID`);
-ALTER TABLE `Event_Staff` ADD FOREIGN KEY (EventID_Event) REFERENCES `Event` (`EventID`);
+ALTER TABLE `Event_Staff` ADD FOREIGN KEY (EventID) REFERENCES `Event` (`EventID`);
 ALTER TABLE `Users_Roles` ADD FOREIGN KEY (UserID) REFERENCES `User` (`UserID`);
 ALTER TABLE `Users_Roles` ADD FOREIGN KEY (RoleID) REFERENCES `Roles` (`RoleID`);
 ALTER TABLE `Equipment` ADD FOREIGN KEY (AreaID) REFERENCES `ServiceArea` (`AreaID`);
@@ -273,7 +273,7 @@ ALTER TABLE `Room_Approvals` ADD FOREIGN KEY (ApproverUserID) REFERENCES `User` 
 -- ('','','','');
 -- INSERT INTO `Equipment_Approvals` (`ApprovedDT`,`Approved`,`ApproverUserID`,`Room_ReservationID`,`Equipment_ApprovalID`) VALUES
 -- ('','','','','');
--- INSERT INTO `Event_Staff` (`StartBlock48`,`EndBlock48`,`UserID`,`EventID_Event`) VALUES
+-- INSERT INTO `Event_Staff` (`StartBlock48`,`EndBlock48`,`UserID`,`EventID`) VALUES
 -- ('','','','');
 -- INSERT INTO `Users_Roles` (`UserID`,`RoleID`) VALUES
 -- ('','');
