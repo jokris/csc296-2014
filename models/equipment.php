@@ -4,8 +4,29 @@ require_once('model.php');
 class Equipment extends Model {
 	private $id, $name, $condition, $acquiredDT, $areaID;
 
+	protected function Equipment($id) {
+		$this->id = $id;
+	}
+
+	protected static function Create() {
+		return new Equipment(null);
+	}
+
 	public static function get_all() {
-		return Array();
+		$rs = Array();
+		$sth = self::$_db->prepare('SELECT * FROM Equipment');
+		$sth->execute();
+		while ($row = $sth->fetch(PDO::FETCH_OBJ)) {
+			$obj = new Equipment($row->EquipmentID);
+
+			$obj->Name = $row->Name;
+			$obj->Condition = $row->Condition;
+			$obj->AcquiredDT = $row->AcquiredDT;
+			$obj->AreaID = $row->AreaID;
+
+			array_push($rs,$obj);
+		}
+		return $rs;
 	}
 
 	public function __get($key) {
@@ -33,6 +54,9 @@ class Equipment extends Model {
 				$this->name = $value;
 				break;
 			case 'Condition':
+                                if ($value != null && $value != 'NEW' && $value != 'GOOD' && $value != 'NEEDS REPAIR')
+                                        throw new Exception('Invalid value.');
+
 				$this->condition = $value;
 				break;
 			case 'AcquiredDT':
@@ -41,7 +65,8 @@ class Equipment extends Model {
 			case 'AreaID':
 				$this->AreaID = $value;
 				break;
+			default:
+				 throw new Exception('Property "' . $key . '" does not exist on type Equipment');
 		}
-		throw new Exception('Property does not exist on type Equipment');
 	}
 }
