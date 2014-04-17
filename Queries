@@ -1,0 +1,81 @@
+/* Group 9 */
+
+
+
+/* get all events owned by the current requestor */
+
+SELECT EventName
+FROM Event
+WHERE OwnerEmail = <CURRENT_REQUESTOR>
+
+/* get all reservations associated with current requestor joined to approvals */
+
+
+SELECT *
+FROM Event
+	LEFT OUTER JOIN Equipment_Approvals
+		ON Event.EventName = Equipment_Approvals.EventName
+	LEFT OUTER JOIN Room_Approvals
+		ON Event.EventName = Room_Approvals.EventName
+WHERE OwnerEmail = <CURRENT_REQUESTOR>
+		
+/* get all reservations joined on assets where the orginzation matches that of the approver */
+
+
+SELECT *
+FROM( SELECT AreaName
+	FROM Roles
+	WHERE RoleName = 
+		(SELECT RoleName
+	 	  FROM User_Roles
+	  	  WHERE UserName = 
+			(SELECT UserName
+		 	 FROM Users
+		 	 WHERE Email = <CURRENT_REQUESTOR> 
+			)	
+		)
+    )
+	LEFT JOIN 
+SELECT *
+FROM ( SELECT *
+	FROM Equipment_Approvals
+		OUTER JOIN Equipment 
+		ON Equipment_Approvals.EquipmentName =  Equiptment.EquipmentName)
+     ,(SELECT *
+	FROM Room_Approvals
+		OUTER JOIN Room 
+		ON Room_Approvals.RoomName =  Room.RoomName)
+
+
+/* Get all reservations, inner joined on approvals where the service /*
+/* and time match those I requested */
+
+SELECT * 
+FROM
+(
+SELECT *
+FROM Equipment_Approvals
+WHERE StartDT = <TIME_INPUT>
+),
+(
+SELECT * 
+FROM Room_Approvals
+WHERE StartDT = <TIME_INPUT>
+)
+
+
+/* get all userIDs associated with a reservation with their names */
+
+SELECT Name
+FROM Users
+	LEFT INNER JOIN Event_Staff on Users.Email = Event_Staff.UserEmail
+WHERE Event_Staff.EventName = <THIS_EVENT>
+
+/* get all assignments of the current user */
+
+SELECT EventName, StartDT, EndDT, EventStartDT AS Event_Start
+FROM Event_Staff
+WHERE UserEmail = <CURRENT_USER>
+
+
+	
