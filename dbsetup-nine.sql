@@ -18,8 +18,8 @@ DROP TABLE IF EXISTS `Event_Equipment`;
 		
 CREATE TABLE `Event_Equipment` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT,
-  `StartBlock48` INT(2) NOT NULL DEFAULT NULL,
-  `EndBlock48` INT(2) NULL DEFAULT NULL,
+  `StartBlock48` INTEGER(2) NOT NULL DEFAULT NULL,
+  `EndBlock48` INTEGER(2) NULL DEFAULT NULL,
   `EquipmentID` INTEGER NOT NULL,
   `UserID` INTEGER NOT NULL DEFAULT NULL,
   `EventID` INTEGER NOT NULL DEFAULT NULL,
@@ -97,7 +97,7 @@ DROP TABLE IF EXISTS `Equipment_Approvals`;
 		
 CREATE TABLE `Equipment_Approvals` (
   `ApprovedDT` DATE NOT NULL,
-  `Approved` bit NOT NULL DEFAULT false,
+  `Approved` bit(1) NOT NULL DEFAULT false,
   `ApproverUserID` INTEGER NOT NULL,
   `Room_ReservationID` INTEGER NOT NULL,
   `Equipment_ApprovalID` INTEGER NOT NULL AUTO_INCREMENT,
@@ -116,7 +116,7 @@ CREATE TABLE `Event_Staff` (
   `EndBlock48` INTEGER(2) NOT NULL,
   `UserID` INTEGER NOT NULL DEFAULT NULL,
   `EventID_Event` INTEGER NOT NULL,
-  PRIMARY KEY (`UserID`, `StartBlock48`, `EndBlock48`)
+  PRIMARY KEY (`UserID`, `StartBlock48`, `EndBlock48`, `EventID_Event`)
 );
 
 -- ---
@@ -173,10 +173,10 @@ CREATE TABLE `Room` (
   `RoomID` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
   `Name` VARCHAR(100) NOT NULL,
   `Capacity` INTEGER NULL DEFAULT NULL,
-  `Accessible` bit NOT NULL DEFAULT FALSE,
+  `Accessible` bit(1) NOT NULL DEFAULT FALSE,
   `Building` VARCHAR(100) NULL DEFAULT NULL,
-  `Audio` ENUM NOT NULL DEFAULT FALSE,
-  `Video` ENUM NOT NULL DEFAULT FALSE,
+  `Audio` ENUM(Provided,Ready,Unsupported) NOT NULL,
+  `Video` ENUM(Provided,Ready,Unsupported) NOT NULL DEFAULT FALSE,
   `AreaID` INTEGER NOT NULL,
   PRIMARY KEY (`RoomID`)
 );
@@ -191,8 +191,8 @@ DROP TABLE IF EXISTS `Event_Room`;
 CREATE TABLE `Event_Room` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
   `RoomID` INTEGER NOT NULL DEFAULT NULL,
-  `StartBlock48` INT(2) NOT NULL,
-  `EndBlock48` INT NOT NULL,
+  `StartBlock48` INTEGER(2) NOT NULL,
+  `EndBlock48` INTEGER(2) NOT NULL,
   `EventID` INTEGER NOT NULL,
   `UserID` INTEGER NOT NULL,
   PRIMARY KEY (`ReservationID`),
@@ -209,7 +209,7 @@ DROP TABLE IF EXISTS `Room_Approvals`;
 CREATE TABLE `Room_Approvals` (
   `Room_ReservationID` INTEGER NOT NULL,
   `Room_ApprovalID` INTEGER NULL DEFAULT NULL,
-  `Approved` bit NOT NULL DEFAULT false,
+  `Approved` bit(1) NOT NULL DEFAULT false,
   `ApproverUserID` INTEGER NOT NULL DEFAULT NULL,
   `ApprovedDT` DATE NULL DEFAULT NULL,
   PRIMARY KEY (`Room_ApprovalID`)
@@ -240,4 +240,52 @@ ALTER TABLE `Room_Approvals` ADD FOREIGN KEY (Room_ReservationID) REFERENCES `Ev
 ALTER TABLE `Room_Approvals` ADD FOREIGN KEY (ApproverUserID) REFERENCES `User` (`UserID`);
 
 -- ---
+-- Table Properties
+-- ---
+
+-- ALTER TABLE `Event_Equipment` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `User` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `ServiceArea` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Event` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Equipment_Approvals` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Event_Staff` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Users_Roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Equipment` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `User_Contact` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Room` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Event_Room` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Room_Approvals` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ---
+-- Test Data
+-- ---
+
+-- INSERT INTO `Event_Equipment` (`ReservationID`,`StartBlock48`,`EndBlock48`,`EquipmentID`,`UserID`,`EventID`) VALUES
+-- ('','','','','','');
+-- INSERT INTO `User` (`UserID`,`UserName`,`Name`,`Email`) VALUES
+-- ('','','','');
+-- INSERT INTO `ServiceArea` (`AreaID`,`AreaName`,`Description`) VALUES
+-- ('','','');
+-- INSERT INTO `Event` (`EventID`,`EventName`,`Description`,`StartDT`,`EndDT`,`OwnerUserID`) VALUES
+-- ('','','','','','');
+-- INSERT INTO `Roles` (`RoleID`,`RoleLevel`,`AreaID`,`RoleName`) VALUES
+-- ('','','','');
+-- INSERT INTO `Equipment_Approvals` (`ApprovedDT`,`Approved`,`ApproverUserID`,`Room_ReservationID`,`Equipment_ApprovalID`) VALUES
+-- ('','','','','');
+-- INSERT INTO `Event_Staff` (`StartBlock48`,`EndBlock48`,`UserID`,`EventID_Event`) VALUES
+-- ('','','','');
+-- INSERT INTO `Users_Roles` (`UserID`,`RoleID`) VALUES
+-- ('','');
+-- INSERT INTO `Equipment` (`EquipmentID`,`Name`,`Condition`,`AcquiredDT`,`AreaID`) VALUES
+-- ('','','','','');
+-- INSERT INTO `User_Contact` (`Type`,`Value`,`UserID`) VALUES
+-- ('','','');
+-- INSERT INTO `Room` (`RoomID`,`Name`,`Capacity`,`Accessible`,`Building`,`Audio`,`Video`,`AreaID`) VALUES
+-- ('','','','','','','','');
+-- INSERT INTO `Event_Room` (`ReservationID`,`RoomID`,`StartBlock48`,`EndBlock48`,`EventID`,`UserID`) VALUES
+-- ('','','','','','');
+-- INSERT INTO `Room_Approvals` (`Room_ReservationID`,`Room_ApprovalID`,`Approved`,`ApproverUserID`,`ApprovedDT`) VALUES
+-- ('','','','','');
+
 
