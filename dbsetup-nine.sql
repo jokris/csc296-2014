@@ -18,12 +18,13 @@ DROP TABLE IF EXISTS `Event_Equipment`;
 		
 CREATE TABLE `Event_Equipment` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT,
-  `StartDT` DATE NOT NULL DEFAULT 'NULL',
-  `EndDT` DATE NULL DEFAULT NULL,
+  `StartBlock48` INT(2) NOT NULL DEFAULT NULL,
+  `EndBlock48` INT(2) NULL DEFAULT NULL,
   `EquipmentID` INTEGER NOT NULL,
   `UserID` INTEGER NOT NULL DEFAULT NULL,
   `EventID` INTEGER NOT NULL DEFAULT NULL,
-  PRIMARY KEY (`ReservationID`)
+  PRIMARY KEY (`ReservationID`),
+KEY (`EquipmentID`, `StartBlock48`, `EndBlock48`)
 );
 
 -- ---
@@ -111,11 +112,11 @@ CREATE TABLE `Equipment_Approvals` (
 DROP TABLE IF EXISTS `Event_Staff`;
 		
 CREATE TABLE `Event_Staff` (
-  `StartDT` DATE NOT NULL,
-  `EndDT` DATE NOT NULL,
+  `StartBlock48` INTEGER(2) NOT NULL,
+  `EndBlock48` INTEGER(2) NOT NULL,
   `UserID` INTEGER NOT NULL DEFAULT NULL,
   `EventID_Event` INTEGER NOT NULL,
-  PRIMARY KEY (`UserID`)
+  PRIMARY KEY (`UserID`, `StartBlock48`, `EndBlock48`)
 );
 
 -- ---
@@ -190,11 +191,12 @@ DROP TABLE IF EXISTS `Event_Room`;
 CREATE TABLE `Event_Room` (
   `ReservationID` INTEGER NOT NULL AUTO_INCREMENT DEFAULT NULL,
   `RoomID` INTEGER NOT NULL DEFAULT NULL,
-  `StartDT` DATE NOT NULL DEFAULT 'NULL',
-  `EndDT` DATE NULL DEFAULT NULL,
+  `StartBlock48` INT(2) NOT NULL,
+  `EndBlock48` INT NOT NULL,
   `EventID` INTEGER NOT NULL,
   `UserID` INTEGER NOT NULL,
-  PRIMARY KEY (`ReservationID`)
+  PRIMARY KEY (`ReservationID`),
+KEY (`RoomID`, `StartBlock48`, `EndBlock48`)
 );
 
 -- ---
@@ -238,53 +240,4 @@ ALTER TABLE `Room_Approvals` ADD FOREIGN KEY (Room_ReservationID) REFERENCES `Ev
 ALTER TABLE `Room_Approvals` ADD FOREIGN KEY (ApproverUserID) REFERENCES `User` (`UserID`);
 
 -- ---
--- Table Properties
--- ---
-
--- ALTER TABLE `Event_Equipment` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `User` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `ServiceArea` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Event` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Equipment_Approvals` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Event_Staff` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Users_Roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Equipment` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `User_Contact` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Room` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Event_Room` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Room_Approvals` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ---
--- Test Data
--- ---
-
--- INSERT INTO `Event_Equipment` (`ReservationID`,`StartDT`,`EndDT`,`EquipmentID`,`UserID`,`EventID`) VALUES
--- ('','','','','','');
--- INSERT INTO `User` (`UserID`,`UserName`,`Name`,`Email`) VALUES
--- ('','','','');
--- INSERT INTO `ServiceArea` (`AreaID`,`AreaName`,`Description`) VALUES
--- ('','','');
--- INSERT INTO `Event` (`EventID`,`EventName`,`Description`,`StartDT`,`EndDT`,`OwnerUserID`) VALUES
--- ('','','','','','');
--- INSERT INTO `Roles` (`RoleID`,`RoleLevel`,`AreaID`,`RoleName`) VALUES
--- ('','','','');
--- INSERT INTO `Equipment_Approvals` (`ApprovedDT`,`Approved`,`ApproverUserID`,`Room_ReservationID`,`Equipment_ApprovalID`) VALUES
--- ('','','','','');
--- INSERT INTO `Event_Staff` (`StartDT`,`EndDT`,`UserID`,`EventID_Event`) VALUES
--- ('','','','');
--- INSERT INTO `Users_Roles` (`UserID`,`RoleID`) VALUES
--- ('','');
--- INSERT INTO `Equipment` (`EquipmentID`,`Name`,`Condition`,`AcquiredDT`,`AreaID`) VALUES
--- ('','','','','');
--- INSERT INTO `User_Contact` (`Type`,`Value`,`UserID`) VALUES
--- ('','','');
--- INSERT INTO `Room` (`RoomID`,`Name`,`Capacity`,`Accessible`,`Building`,`Audio`,`Video`,`AreaID`) VALUES
--- ('','','','','','','','');
--- INSERT INTO `Event_Room` (`ReservationID`,`RoomID`,`StartDT`,`EndDT`,`EventID`,`UserID`) VALUES
--- ('','','','','','');
--- INSERT INTO `Room_Approvals` (`Room_ReservationID`,`Room_ApprovalID`,`Approved`,`ApproverUserID`,`ApprovedDT`) VALUES
--- ('','','','','');
-
-A
 
